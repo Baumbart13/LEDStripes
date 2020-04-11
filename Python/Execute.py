@@ -2,15 +2,6 @@
 import neopixel
 import random
 
-# Indexes:
-#	Mode_ColorOffColorOff	- line 14
-#	Mode_ColorFade 		- line 73
-#	Mode_RainbowFlow	- line 113
-#	Mode_PackChaser		- line 165
-#	Mode_KnightRider	- line 221
-#	Mode_Police		- line 284
-
-
 # Pixels are getting set to "Color1", then 2 are black, next one is "Color2",
 # another 2 are set black. Start then over again
 # Template class -- needs to be changed, as wanted
@@ -20,11 +11,11 @@ class Mode_ColorOffColorOff:
 	colAlternatives = 5	# Black pixel is also an alternative. This
 				# represents the "length" of "color-array"
 				# ..dude, I have no clue how to explain this
-				# please just watch it up yourself
+				# please just look it up yourself
 	
 	def update(self, Config):
 		
-		# First Clear the Stripe
+		# First clear the Stripe
 		Config.Stripe.fill(0x000000)
 		
 		# Then set the Colors
@@ -41,34 +32,17 @@ class Mode_ColorOffColorOff:
 			#  End of Changeable Section
 			
 			# "col" reached max amount of color-alternative?
-			if(self.col < self.colAlternatives):
-				self.col += 1
-			else:
-				self.col = 0
+			self.col = self.col+1 if self.col < self.colAlternatives else 0
 			
 			# if "i" overshoots pixelamount
-			if(i < Config.length):
-				i += 1
-			else:
-				i = 0
-		Config.Stripe.show()
+			i = i+1 if i < Config.length else 0
 		
 		# if "currentPixel" overshoots pixelamount
-		if(self.currentPixel < Config.length):
-			self.currentPixel += 1
-		else:
-			self.currentPixel = 0
+		self.currentPixel = self.currentPixel+1 if self.currentPixel < Config.length else 0
 		
+		# Show changed pixels
+		Config.Stripe.show()
 		return
-
-
-# Indexes:
-#	Mode_ColorOffColorOff	- line 14
-#	Mode_ColorFade 		- line 73
-#	Mode_RainbowFlow	- line 113
-#	Mode_PackChaser		- line 165
-#	Mode_KnightRider	- line 221
-#	Mode_Police		- line 284
 
 # Some "Pulse-Effect, Good for underglow on cars
 class Mode_ColorFade:
@@ -80,7 +54,6 @@ class Mode_ColorFade:
 		for i in range(0, Config.length):
 			if(0 <= i < Config.length):
 				Config.Stripe[i] = (self.rgb[0], self.rgb[1], self.rgb[2])
-		Config.Stripe.show()
 		
 		#  Change this section as you want it to be
 		#  Shown here: only green
@@ -97,18 +70,11 @@ class Mode_ColorFade:
 					self.rgb[1] = 0xff
 			else:
 				self.fadeDown = not self.fadeDown
+		# End of changeable section
 		
+		# Show changed pixels
+		Config.Stripe.show()
 		return
-
-
-
-# Indexes:
-#	Mode_ColorOffColorOff	- line 14
-#	Mode_ColorFade 		- line 73
-#	Mode_RainbowFlow	- line 113
-#	Mode_PackChaser		- line 165
-#	Mode_KnightRider	- line 221
-#	Mode_Police		- line 284
 
 # Simple Rainbow flowing along the Stripe
 class Mode_RainbowFlow:
@@ -141,26 +107,13 @@ class Mode_RainbowFlow:
 			
 			if(0 <= i < Config.length):
 				Config.Stripe[i] = self.wheel(self.currentPos & 255)
-		Config.Stripe.show()
 		
 		# if "currentPos" overshoots 255
-		if(self.currentPos < 255):
-			self.currentPos += 1
-		else:
-			self.currentPos = 0
+		self.currentPos = self.currentPos+1 if self.currentPos < 255 else 0
 		
+		# Show changed pixels
+		Config.Stripe.show()
 		return
-
-
-
-
-# Indexes:
-#	Mode_ColorOffColorOff	- line 14
-#	Mode_ColorFade 		- line 73
-#	Mode_RainbowFlow	- line 113
-#	Mode_PackChaser		- line 165
-#	Mode_KnightRider	- line 221
-#	Mode_Police		- line 284
 
 # A specific amount of Packs with a specific amount of Pixels in it are
 # walking over the stripe
@@ -187,36 +140,17 @@ class Mode_PackChaser:
 			#
 			# Nope.not how many Packs; True meaning here:
 			# col reached max-alternatives?
-			if(self.col < int(Config.length / self.amount)):
-				self.col += 1
-			else:
-				self.col = 0
+			self.col = self.col+1 if (self.col < int(Config.length / self.amount)) else 0
 			
 			# if "i" overshoots pixelamount
-			if(i < Config.length):
-				i += 1
-			else:
-				i = 0
-		Config.Stripe.show()
+			i = i+1 if i < Config.length else 0
 		
 		# if "currentPixel" overshoots pixelamount
-		if(self.currentPixel < Config.length):
-			self.currentPixel += 1
-		else:
-			self.currentPixel = 0
+		self.currentPixel = self.currentPixel+1 if self.currentPixel < Config.length else 0
 		
+		# Show changed pixels
+		Config.Stripe.show()
 		return
-
-
-
-
-# Indexes:
-#	Mode_ColorOffColorOff	- line 14
-#	Mode_ColorFade 		- line 73
-#	Mode_RainbowFlow	- line 113
-#	Mode_PackChaser		- line 165
-#	Mode_KnightRider	- line 221
-#	Mode_Police		- line 284
 
 # You know "Knight Rider"?
 # You know "Kitt"? Or even "Karr"?
@@ -245,22 +179,15 @@ class Mode_KnightRider:
 				Config.Stripe[i] = (const_deltaRed*countSteps, const_deltaGreen*countSteps, const_deltaBlue*countSteps)
 			
 			# change countSteps
-			if(colorUp):
-				countSteps += 1
-			else:
-				countSteps -= 1
+			countSteps = countSteps+1 if colorUp else countSteps-1
 			
 			if(i == self.currentPixel):
 				colorUp = not colorUp
 			
 			i += 1
-		Config.Stripe.show()
 		
 		# move forward or backwards?
-		if(self.forward):
-			self.currentPixel += 1
-		else:
-			self.currentPixel -= 1
+		self.currentPixel = self.currentPixel+1 if self.forward else self.currentPixel-1
 		
 		# change direction
 		if(self.currentPixel == 0 and not self.forward):
@@ -268,21 +195,13 @@ class Mode_KnightRider:
 		elif(self.currentPixel == Config.length and self.forward):
 			self.forward = False
 		
+		# Show changed pixels
+		Config.Stripe.show()
 		return
-
-
-
-
-# Indexes:
-#	Mode_ColorOffColorOff	- line 14
-#	Mode_ColorFade 		- line 73
-#	Mode_RainbowFlow	- line 113
-#	Mode_PackChaser		- line 165
-#	Mode_KnightRider	- line 221
-#	Mode_Police		- line 284
 
 # US-Policelights
 # I am not from the US, so please forgive me, if it's an absolutely wrong pattern
+# P.S.: I am not responsible for anyone to break the law
 class Mode_Police:
 	sections = 7
 	
@@ -350,4 +269,6 @@ class Mode_Police:
 			elif(deactivateSection % const_BLUE == 0):
 				Config.Stripe[i] = 0x000000
 		
+		# Show changed pixels
 		Config.Stripe.show()
+		return
